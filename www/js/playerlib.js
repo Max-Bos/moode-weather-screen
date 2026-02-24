@@ -896,6 +896,11 @@ function screenSaver(cmd) {
             $('#ss-coverart').css('display', 'none');
             $('#ss-clock').css('display', 'block');
             showSSClock();
+        } else if (SESSION.json['scnsaver_mode'].includes('Weather')) {
+            $('#ss-coverart').css('display', 'none');
+            $('#ss-clock').css('display', 'none');
+            $('#ss-weather').css('display', 'block');
+            showWeatherScreen();
         }
 	} else if (cmd.slice(-1) == '0') {
         // Hide CoverView
@@ -920,6 +925,11 @@ function showSSClock() {
             var showSweepSecondHand = SESSION.json['scnsaver_mode'] == 'Analog clock (Sweep)' ? true : false;
 			showAnalogClock("ss-clock", ANALOGCLOCK_REFRESH_INTERVAL_SMOOTH, showSweepSecondHand);
 			break;
+        // Weather functions are in weather.js
+        case 'Weather':
+        case 'Weather (24-hour)':
+            showWeatherScreen();
+            break;
 
 		default: break;
 	}
@@ -937,6 +947,12 @@ function hideSSClock() {
         case 'Analog clock (Sweep)':
 			hideAnalogClock();
 			break;
+        // Weather functions are in weather.js
+        case 'Weather':
+        case 'Weather (24-hour)':
+            hideWeatherScreen();
+            $('#ss-weather').css('display', 'none');
+            break;
 
 		default: break;
 	}
@@ -3392,6 +3408,11 @@ $(document).on('click', '.context-menu a', function(e) {
                 $('#show-cvpb span').text(SESSION.json['show_cvpb']);
                 $('#scnsaver-xmeta span').text(SESSION.json['scnsaver_xmeta']);
 
+                // Weather
+                $('#weather-api-key').val(SESSION.json['weather_api_key'] || '');
+                $('#weather-location').val(SESSION.json['weather_location'] || '');
+                $('#weather-units span').text(getKeyOrValue('key', SESSION.json['weather_units'] || 'metric'));
+
                 $('#preferences-modal').modal();
             });
             break;
@@ -3607,6 +3628,12 @@ $('#btn-preferences-update').click(function(e){
     if (SESSION.json['scnsaver_layout'] != $('#scnsaver-layout span').text()) {scnSaverLayoutChange = true;}
     if (SESSION.json['scnsaver_xmeta'] != $('#scnsaver-xmeta span').text()) {extraTagsChange = true;}
 
+    // Weather settings change detection
+    var weatherSettingsChange = false;
+    if ((SESSION.json['weather_api_key'] || '') != $('#weather-api-key').val()) {weatherSettingsChange = true;}
+    if ((SESSION.json['weather_location'] || '') != $('#weather-location').val()) {weatherSettingsChange = true;}
+    if ((SESSION.json['weather_units'] || 'metric') != getKeyOrValue('value', $('#weather-units span').text())) {weatherSettingsChange = true;}
+
 	// Appearance
 	SESSION.json['themename'] = $('#theme-name span').text();
 	SESSION.json['accent_color'] = $('#accent-color span').text();
@@ -3664,6 +3691,11 @@ $('#btn-preferences-update').click(function(e){
     SESSION.json['show_cvpb'] = $('#show-cvpb span').text();
     SESSION.json['scnsaver_xmeta'] = $('#scnsaver-xmeta span').text();
 
+    // Weather
+    SESSION.json['weather_api_key'] = $('#weather-api-key').val();
+    SESSION.json['weather_location'] = $('#weather-location').val();
+    SESSION.json['weather_units'] = getKeyOrValue('value', $('#weather-units span').text());
+
 	if (fontSizeChange == true) {
 		setFontSize();
 		window.dispatchEvent(new Event('resize')); // Resize knobs if needed
@@ -3679,6 +3711,14 @@ $('#btn-preferences-update').click(function(e){
             $.post('command/system.php?cmd=restart_local_display');
         }
 	}
+
+    if (weatherSettingsChange == true) {
+        $.post('command/weather.php?cmd=save_weather_settings', {
+            'weather_api_key': SESSION.json['weather_api_key'],
+            'weather_location': SESSION.json['weather_location'],
+            'weather_units': SESSION.json['weather_units']
+        });
+    }
 
     if (clearLibcacheAllReqd == true) {
         $.post('command/music-library.php?cmd=clear_libcache_all');
@@ -5274,7 +5314,7 @@ function deleteRadioStationObject (stationName) {
 function getKeyOrValue (type, item) {
     let mapTable = new Map([
         // Screen saver timeout
-        ['Never','Never'],['1 minute','60'],['2 minutes','120'],['5 minutes','300'],['10 minutes','600'],['20 minutes','1200'],['30 minutes','1800'],['1 hour','3600'],
+        ['Never','Never'],['20 seconds','20'],['1 minute','60'],['2 minutes','120'],['5 minutes','300'],['10 minutes','600'],['20 minutes','1200'],['30 minutes','1800'],['1 hour','3600'],
         // Library recently added
         ['1 Week','604800000'],['1 Month','2592000000'],['3 Months','7776000000'],['6 Months','15552000000'],['1 Year','31536000000'],['No limit','3153600000000'],
         // Library cover search priority
@@ -5296,6 +5336,8 @@ function getKeyOrValue (type, item) {
         ['NAS','fa-computer'],['NVME','fa-memory'],['OSDISK','fa-folders'],['RADIO','fa-microphone'],['SATA','fa-hard-drive'],['USB','fa-usb-drive'],
         // Now-playing icon
         ['None','None'],['Waveform','waveform'],['Equalizer (Animated)','equalizer'],
+        // Weather units
+        ['Metric (°C)','metric'],['Imperial (°F)','imperial'],
         // View -> Item position
         ['radio','radio_pos'],['folder','folder_pos'],['tag','lib_pos'],['album','lib_pos'],['playlist','playlist_pos']
     ]);

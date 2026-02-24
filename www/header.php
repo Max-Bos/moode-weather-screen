@@ -45,6 +45,7 @@
 	<link href="css/media.css" rel="stylesheet">
 	<link href="css/osk.css" rel="stylesheet">
 	<link href="css/analog-clock.css" rel="stylesheet">
+	<link href="css/weather.css" rel="stylesheet">
 	<!-- endbuild -->
 
 	<!-- Common JS -->
@@ -68,6 +69,7 @@
 	<script src="js/links.js" defer></script>
 	<script src="js/osk.js" defer></script>
 	<script src="js/analog-clock.js" defer></script>
+	<script src="js/weather.js" defer></script>
 	<!-- endbuild -->
 
 	<!-- Playback / Library -->

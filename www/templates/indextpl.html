@@ -12,6 +12,7 @@
 		<div id="ss-backdrop"></div>
 		<div id="ss-style"></div>
 		<div id="ss-clock" class="ss-clock" ></div>
+		<div id="ss-weather"></div>
 		<div id="ss-coverart" class="ss-coverart">
 			<div id="ss-coverart-url"></div>
 			<div id="ss-metadata">
@@ -1533,6 +1534,7 @@
 							<div class="dropdown-menu open">
 								<ul class="dropdown-menu custom-select inner" role="menu">
 									<li class="modal-dropdown-text"><a href="#notarget" data-cmd="scnsaver-timeout-sel"><span class="text">Never</span></a></li>
+									<li class="modal-dropdown-text"><a href="#notarget" data-cmd="scnsaver-timeout-sel"><span class="text">20 seconds</span></a></li>
 									<li class="modal-dropdown-text"><a href="#notarget" data-cmd="scnsaver-timeout-sel"><span class="text">1 minute</span></a></li>
 									<li class="modal-dropdown-text"><a href="#notarget" data-cmd="scnsaver-timeout-sel"><span class="text">2 minutes</span></a></li>
 									<li class="modal-dropdown-text"><a href="#notarget" data-cmd="scnsaver-timeout-sel"><span class="text">5 minutes</span></a></li>
@@ -1636,12 +1638,14 @@
 									<li class="modal-dropdown-text"><a href="#notarget" data-cmd="scnsaver-mode-sel"><span class="text">Digital clock (24-hour)</span></a></li>
 									<li class="modal-dropdown-text"><a href="#notarget" data-cmd="scnsaver-mode-sel"><span class="text">Analog clock</span></a></li>
 									<li class="modal-dropdown-text"><a href="#notarget" data-cmd="scnsaver-mode-sel"><span class="text">Analog clock (Sweep)</span></a></li>
+									<li class="modal-dropdown-text"><a href="#notarget" data-cmd="scnsaver-mode-sel"><span class="text">Weather</span></a></li>
+									<li class="modal-dropdown-text"><a href="#notarget" data-cmd="scnsaver-mode-sel"><span class="text">Weather (24-hour)</span></a></li>
 								</ul>
 							</div>
 						</div>
 						<a aria-label="Help" class="info-toggle" data-cmd="info-scnsaver-mode" href="#notarget"><i class="fa-regular fa-sharp fa-info-circle"></i></a>
 						<span id="info-scnsaver-mode" class="help-block hide">
-	                    	Display cover art, a digital clock or an analog clock with an optional sweep second hand.
+	                    	Display cover art, a digital clock, an analog clock with an optional sweep second hand, or a weather display with current conditions and forecast. Weather requires an OpenWeatherMap API key configured below.
 	                    </span>
 	                </div>
 					<label class="control-label" for="scnsaver-layout">Layout</label>
@@ -1708,6 +1712,44 @@
 							Display sample rate and audio format underneath the metadata in wide layout.
 	                    </span>
 	                </div>
+					<label class="control-label" for="weather-api-key">Weather API key</label>
+	                <div class="controls">
+						<input id="weather-api-key" class="input-xlarge" type="text" value="" placeholder="OpenWeatherMap API key">
+						<a aria-label="Help" class="info-toggle" data-cmd="info-weather-api-key" href="#notarget"><i class="fa-regular fa-sharp fa-info-circle"></i></a>
+						<span id="info-weather-api-key" class="help-block hide">
+							Enter your free OpenWeatherMap API key. Get one at <a href="https://openweathermap.org/api" target="_blank">openweathermap.org/api</a>.
+							Required for the Weather display mode.
+						</span>
+					</div>
+					<label class="control-label" for="weather-location">Weather location</label>
+	                <div class="controls">
+						<input id="weather-location" class="input-xlarge" type="text" value="" placeholder="City name (e.g. London,UK)">
+						<a aria-label="Help" class="info-toggle" data-cmd="info-weather-location" href="#notarget"><i class="fa-regular fa-sharp fa-info-circle"></i></a>
+						<span id="info-weather-location" class="help-block hide">
+							Enter your location as a city name, optionally with country code (e.g. "London,UK" or "New York,US").
+						</span>
+					</div>
+					<label class="control-label" for="weather-units">Weather units</label>
+	                <div class="controls">
+						<div class="btn-group bootstrap-select select-large">
+							<button type="button" class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+								<div id="weather-units" class="filter-option pull-left">
+									<span></span>
+								</div>&nbsp;
+								<div class="caret"></div>
+							</button>
+							<div class="dropdown-menu open">
+								<ul class="dropdown-menu custom-select inner" role="menu">
+									<li class="modal-dropdown-text"><a href="#notarget" data-cmd="weather-units-sel"><span class="text">Metric (°C)</span></a></li>
+									<li class="modal-dropdown-text"><a href="#notarget" data-cmd="weather-units-sel"><span class="text">Imperial (°F)</span></a></li>
+								</ul>
+							</div>
+						</div>
+						<a aria-label="Help" class="info-toggle" data-cmd="info-weather-units" href="#notarget"><i class="fa-regular fa-sharp fa-info-circle"></i></a>
+						<span id="info-weather-units" class="help-block hide">
+							Select temperature units for weather display.
+						</span>
+					</div>
 				</div>
 			</div>
 		</div>

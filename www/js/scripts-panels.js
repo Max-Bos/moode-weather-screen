@@ -1775,7 +1775,8 @@ jQuery(document).ready(function($) { 'use strict';
 
             setColors();
             if (SESSION.json['scnsaver_mode'] == 'Digital clock' || SESSION.json['scnsaver_mode'] == 'Digital clock (24-hour)' ||
-                SESSION.json['scnsaver_mode'].includes('Analog clock')) {
+                SESSION.json['scnsaver_mode'].includes('Analog clock') ||
+                SESSION.json['scnsaver_mode'].includes('Weather')) {
 				hideSSClock();
             }
 
