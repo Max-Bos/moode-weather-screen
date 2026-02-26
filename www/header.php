@@ -127,6 +127,7 @@
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 	<meta name="apple-mobile-web-app-title" content="OrangeSound">
 	<link rel="apple-touch-icon" href="/v5-apple-touch-icon.png">
+	<link rel="mask-icon" href="/v5-safari-pinned-tab.svg" color="#e37e2d">
 	<!-- Android/Chrome -->
 	<link rel="icon" type="image/png" sizes="32x32" href="/v5-favicon-32x32.png">
 	<link rel="icon" type="image/png" sizes="16x16" href="/v5-favicon-16x16.png">
