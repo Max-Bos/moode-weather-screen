@@ -47,6 +47,7 @@
 	<link href="css/analog-clock.css" rel="stylesheet">
 	<link href="css/weather.css" rel="stylesheet">
 	<!-- endbuild -->
+	<link href="css/liquid-glass.css" rel="stylesheet">
 
 	<!-- Common JS -->
 	<!-- build:js js/lib.min.js defer -->
