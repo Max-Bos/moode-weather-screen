@@ -41,8 +41,16 @@ self.addEventListener('fetch', (event) => {
 
 	const url = new URL(event.request.url);
 
-	// Network-first for PHP/API endpoints and WebSocket upgrades
+	// Network-first for dynamic PHP/API and command endpoints
 	if (url.pathname.endsWith('.php') || url.pathname.startsWith('/command/')) {
+		event.respondWith(
+			fetch(event.request).catch(() => caches.match(event.request))
+		);
+		return;
+	}
+
+	// Network-first for page navigations to avoid stale HTML
+	if (event.request.mode === 'navigate') {
 		event.respondWith(
 			fetch(event.request).catch(() => caches.match(event.request))
 		);
@@ -53,7 +61,7 @@ self.addEventListener('fetch', (event) => {
 	event.respondWith(
 		caches.match(event.request).then((cached) => cached || fetch(event.request).then((response) => {
 			// Only cache valid same-origin responses
-			if (!response || response.status !== 200) {
+			if (!response || response.status !== 200 || response.type !== 'basic') {
 				return response;
 			}
 			const clone = response.clone();
