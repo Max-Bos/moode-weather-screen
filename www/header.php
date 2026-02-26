@@ -120,19 +120,18 @@
 	?>
 	<!--endRemoveIf(GENINDEXDEV)-->
 
-	<!-- MOBILE APP ICONS -->
-	<!-- Apple -->
+	<!-- PWA Support -->
+	<link rel="manifest" href="/manifest.json">
+	<meta name="theme-color" content="#e37e2d">
 	<meta name="apple-mobile-web-app-capable" content="yes">
-	<meta name="apple-mobile-web-app-status-bar-style" content="black">
-	<meta name="theme-color" content="rgb(32,32,32)"> <!-- NOTE: As of IOS 18 this tag is not supported and no longer functions-->
-	<link rel="apple-touch-icon" sizes="180x180" href="/v5-apple-touch-icon.png">
-	<link rel="mask-icon" href="/v5-safari-pinned-tab.svg" color="#5bbad5">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="apple-mobile-web-app-title" content="OrangeSound">
+	<link rel="apple-touch-icon" href="/v5-apple-touch-icon.png">
 	<!-- Android/Chrome -->
 	<link rel="icon" type="image/png" sizes="32x32" href="/v5-favicon-32x32.png">
 	<link rel="icon" type="image/png" sizes="16x16" href="/v5-favicon-16x16.png">
-	<!--link rel="manifest" href="/site.webmanifest"-->
 	<!-- Microsoft -->
-	<meta name="msapplication-TileColor" content="#da532c">
+	<meta name="msapplication-TileColor" content="#e37e2d">
 </head>
 
 

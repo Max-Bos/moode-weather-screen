@@ -5375,3 +5375,15 @@ function getKeyOrValue (type, item) {
 
     return result;
 }
+
+
+// Register PWA service worker
+if ('serviceWorker' in navigator) {
+	window.addEventListener('load', function() {
+		navigator.serviceWorker.register('/sw.js').then(function(reg) {
+			console.log('OrangeSound SW registered:', reg.scope);
+		}).catch(function(err) {
+			console.log('OrangeSound SW registration failed:', err);
+		});
+	});
+}
