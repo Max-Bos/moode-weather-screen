@@ -131,7 +131,7 @@
 	<link rel="icon" type="image/png" sizes="32x32" href="/v5-favicon-32x32.png">
 	<link rel="icon" type="image/png" sizes="16x16" href="/v5-favicon-16x16.png">
 	<!-- Microsoft -->
-	<meta name="msapplication-TileColor" content="#e37e2d">
+	<meta name="msapplication-TileColor" content="#da532c">
 </head>
 
 
