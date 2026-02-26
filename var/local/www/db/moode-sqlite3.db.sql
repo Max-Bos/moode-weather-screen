@@ -709,6 +709,10 @@ INSERT INTO cfg_system (id, param, value) VALUES (175, 'scnsaver_xmeta', 'Yes');
 INSERT INTO cfg_system (id, param, value) VALUES (176, 'weather_api_key', '');
 INSERT INTO cfg_system (id, param, value) VALUES (177, 'weather_location', '');
 INSERT INTO cfg_system (id, param, value) VALUES (178, 'weather_units', 'metric');
+INSERT INTO cfg_system (id, param, value) VALUES (179, 'tidalsvc', '0');
+INSERT INTO cfg_system (id, param, value) VALUES (180, 'tidalactive', '0');
+INSERT INTO cfg_system (id, param, value) VALUES (181, 'tidalname', 'Moode TIDAL Connect');
+INSERT INTO cfg_system (id, param, value) VALUES (182, 'rsmaftertidal', 'No');
 
 -- Table: cfg_theme
 CREATE TABLE cfg_theme (id INTEGER PRIMARY KEY, theme_name CHAR (32), tx_color CHAR (32), bg_color CHAR (32), mbg_color CHAR (32));

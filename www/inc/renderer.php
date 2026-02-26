@@ -369,6 +369,21 @@ function stopRoonBridge() {
 	sendFECmd('rbactive0');
 }
 
+// TIDAL Connect
+function startTidal() {
+	sysCmd('mpc stop');
+	sysCmd('systemctl start tidal-connect');
+	sysCmd('python3 /var/www/util/tidalmeta.py &');
+}
+function stopTidal() {
+	sysCmd('systemctl stop tidal-connect');
+	sysCmd('killall -s9 -q python3 /var/www/util/tidalmeta.py');
+	sysCmd('/var/www/util/vol.sh -restore');
+	phpSession('write', 'tidalactive', '0');
+	$GLOBALS['tidalactive'] = '0';
+	sendFECmd('tidalactive0');
+}
+
 // Stop all renderers
 function stopAllRenderers() {
 	$renderers = array(
@@ -379,7 +394,8 @@ function stopAllRenderers() {
 		'upnpsvc'	 => 'stopUPnP',
 		'slsvc'		 => 'stopSqueezeLite',
 		'pasvc'		 => 'stopPlexamp',
-		'rbsvc'		 => 'stopRoonBridge'
+		'rbsvc'		 => 'stopRoonBridge',
+		'tidalsvc'	 => 'stopTidal'
 	);
 
 	// Watchdog (so monitored renderers are not auto restarted)

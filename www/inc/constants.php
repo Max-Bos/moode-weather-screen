@@ -18,6 +18,8 @@ const MOUNTMON_LOG = '/var/log/moode_mountmon.log';
 const SHAIRPORT_SYNC_LOG = '/var/log/moode_shairport-sync.log';
 const LIBRESPOT_LOG = '/var/log/moode_librespot.log';
 const PLEEZER_LOG = '/var/log/moode_pleezer.log';
+const TIDAL_CONNECT_LOG = '/var/log/moode_tidal-connect.log';
+const TIDALEVENT_LOG = '/var/log/moode_tidalevent.log';
 const SPOTEVENT_LOG = '/var/log/moode_spotevent.log';
 const DEEZEVENT_LOG = '/var/log/moode_deezevent.log';
 const SPSEVENT_LOG = '/var/log/moode_spsevent.log';
@@ -35,6 +37,7 @@ const APLMETA_FILE = '/var/local/www/aplmeta.txt';
 const DEEZMETA_FILE = '/var/local/www/deezmeta.txt';
 const DEEZ_CREDENTIALS_FILE = '/etc/deezer/deezer.toml';
 const SPOTMETA_FILE = '/var/local/www/spotmeta.txt';
+const TIDALMETA_FILE = '/var/local/www/tidalmeta.txt';
 const ITUNES_API_BASE_URL = 'https://itunes.apple.com/search';
 // SQLite
 const SQLDB = 'sqlite:/var/local/www/db/moode-sqlite3.db';
@@ -130,6 +133,7 @@ const NAME_BLUETOOTH = 'Bluetooth Controller';
 const NAME_BLUETOOTH_PAIRING_AGENT = 'Pairing Agent';
 const NAME_SPOTIFY = 'Spotify Connect';
 const NAME_DEEZER = 'Deezer Connect';
+const NAME_TIDAL = 'TIDAL Connect';
 const NAME_SQUEEZELITE = 'Squeezelite';
 const NAME_UPNP = 'UPnP';
 const NAME_DLNA = 'DLNA';
@@ -210,8 +214,9 @@ const FEAT_BLUETOOTH    = 16384;	// y Bluetooth renderer
 const FEAT_DEVTWEAKS    = 32768;	//   Developer tweaks
 const FEAT_MULTIROOM    = 65536;	// y Multiroom audio
 const FEAT_PEPPYDISPLAY = 131072;	// y Peppy display
+const FEAT_TIDAL        = 262144;	// n TIDAL Connect renderer
 //						-------
-//						  228279
+//						  490423
 
 // Selective resampling bitmask
 const SOX_UPSAMPLE_ALL			= 3; // Upsample if source < target rate

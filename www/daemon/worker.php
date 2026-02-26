@@ -1215,6 +1215,19 @@ if ($_SESSION['feat_bitmask'] & FEAT_ROONBRIDGE) {
 }
 workerLog('worker: RoonBridge:      ' . $status);
 
+// Start TIDAL Connect renderer
+if ($_SESSION['feat_bitmask'] & FEAT_TIDAL) {
+	if (isset($_SESSION['tidalsvc']) && $_SESSION['tidalsvc'] == 1) {
+		$status = 'started';
+		startTidal();
+	} else {
+		$status = 'available';
+	}
+} else {
+	$status = 'n/a';
+}
+workerLog('worker: TIDAL Connect:   ' . $status);
+
 // Start Multiroom audio
 if ($_SESSION['feat_bitmask'] & FEAT_MULTIROOM) {
 	// Sender
@@ -1557,7 +1570,7 @@ if (chkRendererActive() === true) {
 	sysCmd('/var/www/util/vol.sh 0');
 	$result = sqlQuery("UPDATE cfg_system SET value='0' WHERE param='btactive' OR param='aplactive' OR
 		param='spotactive' OR param='deezactive' OR param='slactive' OR param='paactive' OR param='rbactive' OR
-		param='inpactive'", $dbh);
+		param='inpactive' OR param='tidalactive'", $dbh);
 	workerLog('worker: Active flags:      at least one true');
 	workerLog('worker: Reset flags:       all reset to false');
 	workerLog('worker: MPD volume:        set to 0');
@@ -1652,6 +1665,7 @@ $slactive = '0';
 $paactive = '0';
 $rbactive = '0';
 $inpactive = '0';
+$tidalactive = '0';
 
 // Library update, MPD database regen
 $check_library_update = '0';
@@ -1905,6 +1919,10 @@ while (true) {
 	if ($_SESSION['rbsvc'] == '1') {
 		//debugLog('10: chkRbActive');
 		chkRbActive();
+	}
+	if ($_SESSION['tidalsvc'] == '1') {
+		//debugLog('10b: chkTidalActive');
+		chkTidalActive();
 	}
 	if ($_SESSION['multiroom_rx'] == 'On') {
 		//debugLog('11: chkRxActive');
@@ -2285,6 +2303,28 @@ function chkRxActive() {
 	}
 }
 
+function chkTidalActive() {
+	// Get directly from sql since external tidalmeta.py script does not update the session
+	$result = sqlQuery("SELECT value FROM cfg_system WHERE param='tidalactive'", $GLOBALS['dbh']);
+	if ($result[0]['value'] == '1') {
+		// Do this section only once
+		if ($GLOBALS['tidalactive'] == '0') {
+			$GLOBALS['tidalactive'] = '1';
+			$GLOBALS['scnsaver_timeout'] = $_SESSION['scnsaver_timeout'];
+			sendFECmd('tidalactive1');
+		}
+	} else {
+		// Do this section only once
+		if ($GLOBALS['tidalactive'] == '1') {
+			$GLOBALS['tidalactive'] = '0';
+			sendFECmd('tidalactive0');
+			if ($_SESSION['rsmaftertidal'] == 'Yes') {
+				sysCmd('mpc play');
+			}
+		}
+	}
+}
+
 function chkInpActive() {
 	//$result = sysCmd('pgrep -l alsaloop');
 	//if (strpos($result[0], 'alsaloop') !== false) {
@@ -2325,6 +2365,8 @@ function updExtMetaFile() {
 		$renderer = 'Spotify Active';
 	} else if ($GLOBALS['deezactive'] == '1') {
 		$renderer = 'Deezer Active';
+	} else if ($GLOBALS['tidalactive'] == '1') {
+		$renderer = 'TIDAL Active';
 	} else if ($GLOBALS['slactive'] == '1') {
 		$renderer = 'Squeezelite Active';
 	} else if ($GLOBALS['rbactive'] == '1') {
@@ -3282,6 +3324,16 @@ function runQueuedJob() {
 				if ($_SESSION['w_queueargs'] == 'disconnect_renderer' && $_SESSION['rsmafterrb'] == 'Yes') {
 					sysCmd('mpc play');
 				}
+			}
+			break;
+		case 'tidalsvc':
+			stopTidal();
+			if ($_SESSION['tidalsvc'] == 1) {
+				startTidal();
+			}
+
+			if ($_SESSION['w_queueargs'] == 'disconnect_renderer' && $_SESSION['rsmaftertidal'] == 'Yes') {
+				sysCmd('mpc play');
 			}
 			break;
 

@@ -200,6 +200,27 @@ if (isset($_POST['rbrestart']) && $_POST['rbrestart'] == 1) {
 	submitJob('rbrestart', '', NOTIFY_TITLE_INFO, NAME_ROONBRIDGE . NOTIFY_MSG_SVC_MANUAL_RESTART);
 }
 
+// TIDAL Connect
+if (isset($_POST['update_tidal_settings'])) {
+	if (isset($_POST['tidalname']) && $_POST['tidalname'] != $_SESSION['tidalname']) {
+		$update = true;
+		phpSession('write', 'tidalname', $_POST['tidalname']);
+	}
+	if (isset($_POST['tidalsvc']) && $_POST['tidalsvc'] != $_SESSION['tidalsvc']) {
+		$update = true;
+		phpSession('write', 'tidalsvc', $_POST['tidalsvc']);
+	}
+	if (isset($update)) {
+		submitJob('tidalsvc');
+	}
+}
+if (isset($_POST['update_rsmaftertidal'])) {
+	phpSession('write', 'rsmaftertidal', $_POST['rsmaftertidal']);
+}
+if (isset($_POST['tidalrestart']) && $_POST['tidalrestart'] == 1 && $_SESSION['tidalsvc'] == '1') {
+	submitJob('tidalsvc', '', NOTIFY_TITLE_INFO, NAME_TIDAL . NOTIFY_MSG_SVC_MANUAL_RESTART);
+}
+
 phpSession('close');
 
 // Bluetooth
@@ -354,6 +375,21 @@ if (($_SESSION['feat_bitmask'] & FEAT_ROONBRIDGE)) {
 	$_select['rsmafterrb_off']  .= "<input type=\"radio\" name=\"rsmafterrb\" id=\"toggle-rsmafterrb-2\" value=\"No\" " . (($_SESSION['rsmafterrb'] == 'No') ? "checked=\"checked\"" : "") . $autoClick . ">\n";
 } else {
 	$_feat_roonbridge = 'hide';
+}
+
+// TIDAL Connect
+if (($_SESSION['feat_bitmask'] & FEAT_TIDAL)) {
+	$_feat_tidal = '';
+	$_SESSION['tidalsvc'] == '1' ? $_tidal_btn_disable = '' : $_tidal_btn_disable = 'disabled';
+	$autoClick = " onchange=\"autoClick('#btn-set-tidalsvc');\"";
+	$_select['tidalsvc_on']  .= "<input type=\"radio\" name=\"tidalsvc\" id=\"toggle-tidalsvc-1\" value=\"1\" " . (($_SESSION['tidalsvc'] == '1') ? "checked=\"checked\"" : "") . $autoClick . ">\n";
+	$_select['tidalsvc_off'] .= "<input type=\"radio\" name=\"tidalsvc\" id=\"toggle-tidalsvc-2\" value=\"0\" " . (($_SESSION['tidalsvc'] == '0') ? "checked=\"checked\"" : "") . $autoClick . ">\n";
+	$_select['tidalname'] = $_SESSION['tidalname'];
+	$autoClick = " onchange=\"autoClick('#btn-set-rsmaftertidal');\" " . $_tidal_btn_disable;
+	$_select['rsmaftertidal_on'] .= "<input type=\"radio\" name=\"rsmaftertidal\" id=\"toggle-rsmaftertidal-1\" value=\"Yes\" " . (($_SESSION['rsmaftertidal'] == 'Yes') ? "checked=\"checked\"" : "") . $autoClick . ">\n";
+	$_select['rsmaftertidal_off']  .= "<input type=\"radio\" name=\"rsmaftertidal\" id=\"toggle-rsmaftertidal-2\" value=\"No\" " . (($_SESSION['rsmaftertidal'] == 'No') ? "checked=\"checked\"" : "") . $autoClick . ">\n";
+} else {
+	$_feat_tidal = 'hide';
 }
 
 waitWorker('ren-config');
