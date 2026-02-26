@@ -1,0 +1,13 @@
+[Unit]
+Description=TIDAL Connect
+After=network-online.target sound.target
+Requires=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/tidal-connect --name "Moode TIDAL Connect" --device-type AVRS
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

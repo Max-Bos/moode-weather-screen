@@ -40,6 +40,9 @@ switch ($option) {
 	case '--roonbridge':
 		onoffRoonBridge($onoff);
 		break;
+	case '--tidal':
+		onoffTidal($onoff);
+		break;
 	case '--upnp':
 		onoffUPnP($onoff);
 		break;
@@ -57,7 +60,8 @@ switch ($option) {
 		$slArg = $_SESSION['feat_bitmask'] & FEAT_SQUEEZELITE ? " --squeezelite\tTurn Squeezelite On/Off\n" : "";
 		$paArg = $_SESSION['feat_bitmask'] & FEAT_PLEXAMP ? " --plexamp\tTurn Plexamp On/Off\n" : "";
 		$rbArg = $_SESSION['feat_bitmask'] & FEAT_ROONBRIDGE ? " --roonbridge\tTurn RoonBridge On/Off\n" : "";
-		$rendererList = ' '. $btArg . $apArg . $spArg . $dzArg . $upArg . $slArg . $paArg . $rbArg .
+		$tdArg = $_SESSION['feat_bitmask'] & FEAT_TIDAL ? " --tidal\t\tTurn TIDAL Connect On/Off\n" : "";
+		$rendererList = ' '. $btArg . $apArg . $spArg . $dzArg . $upArg . $slArg . $paArg . $rbArg . $tdArg .
 		" --help\t\tPrint this help text\n";
 		echo
 "Usage: renderer-onoff [OPTION] [on|off]
@@ -160,5 +164,15 @@ function onoffRoonBridge($onoff) {
 	} else if ($onoff == 'off' && $_SESSION['rbsvc'] == '1') {
 		phpSession('write', 'rbsvc', '0');
 		stopRoonBridge();
+	}
+}
+
+function onoffTidal($onoff) {
+	if ($onoff == 'on' && $_SESSION['tidalsvc'] == '0') {
+		phpSession('write', 'tidalsvc', '1');
+		startTidal();
+	} else if ($onoff == 'off' && $_SESSION['tidalsvc'] == '1') {
+		phpSession('write', 'tidalsvc', '0');
+		stopTidal();
 	}
 }

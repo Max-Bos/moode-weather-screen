@@ -555,6 +555,8 @@ function engineCmd() {
                 case 'deezactive0':
                 case 'spotactive1':
                 case 'spotactive0':
+                case 'tidalactive1':
+                case 'tidalactive0':
                     if (cmd[0].includes('apl')) {
                         var rendererName = 'AirPlay';
                         SESSION.json['aplactive'] = cmd[0].slice(-1);
@@ -564,6 +566,9 @@ function engineCmd() {
                     } else if (cmd[0].includes('spot')) {
                         var rendererName = 'Spotify';
                         SESSION.json['spotactive'] = cmd[0].slice(-1);
+                    } else if (cmd[0].includes('tidal')) {
+                        var rendererName = 'TIDAL';
+                        SESSION.json['tidalactive'] = cmd[0].slice(-1);
                     }
                     inpSrcIndicator(cmd[0],
                         '<span id="inpsrc-msg-text">' +
@@ -584,6 +589,7 @@ function engineCmd() {
                 case 'update_aplmeta':
                 case 'update_deezmeta':
                 case 'update_spotmeta':
+                case 'update_tidalmeta':
                     // Received from back-end
                     updateInpsrcMeta(cmd[0], cmd[1]); // cmd[1]: metadata
                     // Fetch from back-end again for robustness
@@ -810,6 +816,8 @@ function refreshInpsrcMeta() {
         cmd = 'get_deezmeta';
     } else if (SESSION.json['spotactive'] == '1') {
         cmd = 'get_spotmeta';
+    } else if (SESSION.json['tidalactive'] == '1') {
+        cmd = 'get_tidalmeta';
     } else {
         cmd = '';
     }
@@ -831,8 +839,9 @@ function updateInpsrcMeta(cmd, data) {
     // AirPlay: [0]:title [1]:artist  [2]:album [3]:duration (in ms)   [4];coverurl  [5]:format
     // Deezer:  [0]:title [1]:artist  [2]:album [3]:duration (in secs) [4];coverurl  [5]:format [6]:decoder
     // Spotify: [0]:title [1]:artists [2]:album [3]:duration (in ms)   [4];coverurls [5]:format
+    // TIDAL:   [0]:title [1]:artist  [2]:album [3]:duration (in ms)   [4];coverurl  [5]:format
     var metadata = data.split('~~~');
-    var timeDivisor = (cmd.includes('_aplmeta') || cmd.includes('_spotmeta')) ? 1000 : 1;
+    var timeDivisor = (cmd.includes('_aplmeta') || cmd.includes('_spotmeta') || cmd.includes('_tidalmeta')) ? 1000 : 1;
     var title = metadata[0];
     var artist = cmd == 'get_spotmeta' ? metadata[1].split("\n")[0] : metadata[1];
     var album = metadata[2];
@@ -1502,6 +1511,18 @@ function renderUI() {
 
             refreshInpsrcMeta();
     	}
+        // TIDAL Connect renderer
+    	if (SESSION.json['tidalactive'] == '1') {
+            inpSrcIndicator('tidalactive1',
+                '<span id="inpsrc-msg-text">TIDAL Active</span>' +
+                '<button class="btn renderer-btn disconnect-tidal" data-job="tidalsvc"><i class="fa-regular fa-sharp fa-xmark"></i></button>' +
+                receiversBtn('tidalactive1') +
+                audioInfoBtn('tidalactive1') +
+                rendererRefreshBtn()
+            );
+
+            refreshInpsrcMeta();
+    	}
     	// Squeezelite renderer
     	if (SESSION.json['slactive'] == '1') {
     		inpSrcIndicator('slactive1',
@@ -1545,7 +1566,7 @@ function renderUI() {
 // Multiroom receivers
 function receiversBtn(rendererActive = '') {
     if (SESSION.json['multiroom_tx'] == 'On') {
-        if (rendererActive == 'aplactive1' || rendererActive == 'deezactive1' || rendererActive == 'spotactive1') {
+        if (rendererActive == 'aplactive1' || rendererActive == 'deezactive1' || rendererActive == 'spotactive1' || rendererActive == 'tidalactive1') {
             // data-cmd: multiroom_rx_modal (full modal), multiroom_rx_modal_limited (just the on/off checkbox)
             var html = '<span class="context-menu"><a class="btn renderer-btn" href="#notarget" data-cmd="multiroom_rx_modal"><i class="fa-regular fa-sharp fa-speakers"></i></a></span>';
         } else {
@@ -1559,7 +1580,7 @@ function receiversBtn(rendererActive = '') {
 }
 // Audio info
 function audioInfoBtn(rendererActive = '') {
-    if (rendererActive == 'aplactive1' || rendererActive == 'deezactive1' || rendererActive == 'spotactive1') {
+    if (rendererActive == 'aplactive1' || rendererActive == 'deezactive1' || rendererActive == 'spotactive1' || rendererActive == 'tidalactive1') {
         var html = '<span><a class="btn renderer-btn" href="javascript:audioInfoPlayback()"><i class="fa-regular fa-sharp fa-music"></i></a></span>';
     } else {
         var html = '<br><span><a class="btn audioinfo-renderer" href="javascript:audioInfoPlayback()">Audio info</a></span>';
@@ -5209,7 +5230,8 @@ function rendererActive() {
         SESSION.json['paactive'] == '1' ||
         SESSION.json['rbactive'] == '1' ||
         SESSION.json['rxactive'] == '1' ||
-        SESSION.json['slactive'] == '1'
+        SESSION.json['slactive'] == '1' ||
+        SESSION.json['tidalactive'] == '1'
     )
 }
 

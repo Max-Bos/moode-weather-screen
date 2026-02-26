@@ -317,7 +317,7 @@ function parseDelimFile($data, $delim) {
 function chkRendererActive() {
 	$result = sqlQuery("SELECT value from cfg_system WHERE param in (
 		'btactive', 'aplactive', 'spotactive', 'deezactive', 'slactive', 'paactive',
-		'rbactive', 'inpactive')", sqlConnect());
+		'rbactive', 'inpactive', 'tidalactive')", sqlConnect());
 
 	$active = false;
 	foreach ($result as $row) {
