@@ -36,6 +36,7 @@ $deezActive = sqlQuery("SELECT value FROM cfg_system WHERE param='deezactive'", 
 $slActive = sqlQuery("SELECT value FROM cfg_system WHERE param='slactive'", $dbh)[0]['value'];
 $paActive = sqlQuery("SELECT value FROM cfg_system WHERE param='paactive'", $dbh)[0]['value'];
 $rbActive = sqlQuery("SELECT value FROM cfg_system WHERE param='rbactive'", $dbh)[0]['value'];
+$tidalActive = sqlQuery("SELECT value FROM cfg_system WHERE param='tidalactive'", $dbh)[0]['value'];
 
 // AirPlay options
 $disableSync = sqlQuery("SELECT value FROM cfg_airplay WHERE param='disable_synchronization'", $dbh)[0]['value'];
@@ -78,6 +79,17 @@ if ($btActive === true && $_SESSION['audioout'] == 'Local') {
 	$_file = 'RoonBridge stream';
 	$_encoded_at = 'Unknown';
 	$_decoded_to = 'Unknown';
+	$_decode_rate = '';
+} else if ($tidalActive == '1') {
+	$_file = 'TIDAL stream';
+	$tidalMeta = file_get_contents(TIDALMETA_FILE);
+	if ($tidalMeta !== false) {
+		$metaFields = explode('~~~', $tidalMeta);
+		$_encoded_at = isset($metaFields[5]) && !empty($metaFields[5]) ? $metaFields[5] : 'FLAC';
+	} else {
+		$_encoded_at = 'FLAC';
+	}
+	$_decoded_to = 'PCM 24 bit, Stereo';
 	$_decode_rate = '';
 } else if ($_SESSION['multiroom_rx'] == 'On') {
 	$_file = 'Multiroom sender stream';
@@ -176,6 +188,8 @@ if ($btActive === true) {
 	$renderer = 'Plexamp &rarr; ';
 } else if ($rbActive == '1') {
 	$renderer = 'Roonbridge &rarr; ';
+} else if ($tidalActive == '1') {
+	$renderer = 'TIDAL Connect &rarr; ';
 } else if ($_SESSION['audioin'] != 'Local') {
 	$renderer = $_SESSION['audioin'] . ' input';
 } else {
@@ -270,7 +284,7 @@ $alsaVol = getAlsaVolumeDb($_SESSION['amixname']);
 $cdspVol = CamillaDSP::getCDSPVol() . 'dB';
 $_volume_levels = 'Knob ' . $knobVol . ', ALSA ' . $alsaVol . ', CDSP ' . $cdspVol;
 
-if ($aplActive == '1' || $spotActive == '1' || $deezActive == '1' || $slActive == '1' || $paActive == '1' || $rbActive == '1' ||
+if ($aplActive == '1' || $spotActive == '1' || $deezActive == '1' || $tidalActive == '1' || $slActive == '1' || $paActive == '1' || $rbActive == '1' ||
 	$btActive === true || $_SESSION['audioout'] == 'Bluetooth' || $_SESSION['inpactive'] == '1') {
 	// Renderer active
 	// NOTE: Class 'off' hides the item
@@ -282,7 +296,7 @@ if ($aplActive == '1' || $spotActive == '1' || $deezActive == '1' || $slActive =
 	$_replaygain = 'off';
 	$_vol_normalize = 'off';
 
-	if ($aplActive == '1' || $spotActive == '1' || $deezActive == '1') {
+	if ($aplActive == '1' || $spotActive == '1' || $deezActive == '1' || $tidalActive == '1') {
 		$_peq = $_SESSION['eqfa12p'] == 'Off' ? 'off' : $_SESSION['eqfa12p'];
 		$_geq = $_SESSION['alsaequal'] == 'Off' ? 'off' : $_SESSION['alsaequal'];
         $_camilladsp = getCamillaDspConfigName($_SESSION['camilladsp']);
